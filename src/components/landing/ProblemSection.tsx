@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { AlertTriangle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const problems = [
   "Many graduates lack practical experience",
@@ -8,22 +9,26 @@ const problems = [
   "Traditional training is too theoretical",
 ];
 
-const ProblemSection = () => (
-  <section className="section-padding bg-muted/50">
-    <div className="container max-w-4xl mx-auto text-center">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-      >
-        <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-muted-foreground mb-4">
-          The Challenge
-        </span>
-        <h2 className="font-display text-3xl md:text-4xl font-bold mb-10">
-          Education does not always prepare young people for real work.
-        </h2>
-      </motion.div>
+const ProblemSection = () => {
+  const { t } = useTranslation();
+  const problems = t("problem.items", { returnObjects: true }) as string[];
+
+  return (
+    <section className="section-padding bg-muted/50">
+      <div className="container max-w-4xl mx-auto text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-muted-foreground mb-4">
+            {t("problem.tagline")}
+          </span>
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-10">
+            {t("problem.title")}
+          </h2>
+        </motion.div>
 
       <div className="grid sm:grid-cols-2 gap-4">
         {problems.map((p, i) => (
@@ -43,5 +48,6 @@ const ProblemSection = () => (
     </div>
   </section>
 );
+};
 
 export default ProblemSection;

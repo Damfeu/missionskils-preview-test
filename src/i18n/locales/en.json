@@ -1,0 +1,156 @@
+{
+  "nav": {
+    "about": "About",
+    "waitlist": "Waitlist",
+    "contact": "Contact"
+  },
+  "hero": {
+    "tagline": "EdTech for Impact",
+    "title_part1": "Learn Digital Skills by Solving ",
+    "title_part2": "Real-World Missions.",
+    "description": "MissionSkills is an EdTech platform that helps young people gain real professional experience while learning through short digital training programs and practical field missions.",
+    "join_waitlist": "Join the Waitlist",
+    "become_partner": "Become a Partner",
+    "image_alt": "Young African learner using a smartphone with UI cards showing missions and badges"
+  },
+  "problem": {
+    "tagline": "The Challenge",
+    "title": "Education does not always prepare young people for real work.",
+    "items": [
+      "Many graduates lack practical experience",
+      "Youth unemployment remains high",
+      "Small businesses struggle with digital transformation",
+      "Traditional training is too theoretical"
+    ]
+  },
+  "solution": {
+    "tagline": "Our Solution",
+    "title": "Learn by Doing.",
+    "features": {
+      "courses": { "title": "Micro Digital Courses", "desc": "Short skill-based learning modules." },
+      "missions": { "title": "Real-World Missions", "desc": "Learners complete tasks for real local businesses." },
+      "validation": { "title": "Skill Validation", "desc": "Earn badges and build a verified portfolio." },
+      "ai": { "title": "AI Learning Coach", "desc": "Personalized guidance and mission recommendations." }
+    }
+  },
+  "howItWorks": {
+    "tagline": "Process",
+    "title": "How It Works",
+    "steps": [
+      { "title": "Sign up", "desc": "Create your free learner profile." },
+      { "title": "Choose a skill", "desc": "Pick from digital marketing, design, data & more." },
+      { "title": "Follow the training", "desc": "Complete bite-sized learning modules." },
+      { "title": "Complete a real mission", "desc": "Apply your skills with a local business." },
+      { "title": "Earn certification", "desc": "Get certified and build your portfolio." }
+    ]
+  },
+  "useCases": {
+    "tagline": "Who It's For",
+    "title": "Built for Every Learner",
+    "items": {
+      "students": { "title": "Students", "desc": "Gain practical experience before graduation." },
+      "jobSeekers": { "title": "Job Seekers", "desc": "Build employable digital skills." },
+      "smes": { "title": "SMEs", "desc": "Accelerate their digital presence with trained youth." }
+    }
+  },
+  "featuresGrid": {
+    "tagline": "Platform Features",
+    "title": "Everything You Need to Grow",
+    "items": {
+      "dashboard": "Smart LMS Dashboard",
+      "missions": "Geo-localized Missions",
+      "xp": "Gamification & XP System",
+      "portfolio": "Digital Skill Portfolio",
+      "marketplace": "Business Mission Marketplace",
+      "analytics": "Learning Analytics"
+    }
+  },
+  "impact": {
+    "tagline": "Impact",
+    "title": "Empowering Local Economies",
+    "description": "By bridging the gap between education and employment, MissionSkills creates lasting impact in communities.",
+    "stats": [
+      { "value": "5,000+", "label": "Youth Targeted" },
+      { "value": "1,000+", "label": "SMEs Impacted" },
+      { "value": "50+", "label": "Skills Planned" }
+    ]
+  },
+  "roadmap": {
+    "tagline": "Roadmap",
+    "title": "Our Journey Ahead",
+    "items": [
+      { "year": "2026", "title": "Prototype & Pilot", "desc": "Launch MVP, onboard first learners and SME partners." },
+      { "year": "2027", "title": "National Deployment", "desc": "Scale across the country with full platform features." },
+      { "year": "2028", "title": "Regional Expansion", "desc": "Expand to neighboring countries and markets." }
+    ]
+  },
+  "partners": {
+    "tagline": "Partners",
+    "title": "Built with a Strong Ecosystem",
+    "items": {
+      "hubs": "Innovation Hubs",
+      "ngos": "NGOs",
+      "training": "Training Centers",
+      "ecosystem": "Tech Ecosystem Partners"
+    }
+  },
+  "finalCTA": {
+    "title": "Join the Future of Practical Learning.",
+    "subtitle": "Be among the first to experience a new way of learning digital skills through real-world impact.",
+    "cta": "Join the Beta",
+    "disclaimer": "Prototype currently under development as part of an EdTech incubation initiative."
+  },
+  "footer": {
+    "description": "Empowering youth through practical digital learning.",
+    "privacy": "Privacy Policy",
+    "linkedin": "LinkedIn",
+    "rights": "All rights reserved."
+  },
+  "about": {
+    "tagline": "About Us",
+    "title_part1": "Building the Future of ",
+    "title_part2": "Practical Learning",
+    "description": "MissionSkills was born from a simple observation: traditional education alone isn't enough to prepare young people for the digital economy.",
+    "pillars": [
+      { "title": "Our Mission", "text": "To bridge the gap between education and employment by giving young people hands-on digital experience through real-world missions in their local communities." },
+      { "title": "Our Vision", "text": "A world where every young person has access to practical, relevant skills that unlock meaningful career opportunities — regardless of where they live." },
+      { "title": "Learning Philosophy", "text": "We believe learning happens best when it's applied. Our approach combines micro-learning modules with field missions, creating a loop of theory, practice, and validation that builds real competence." }
+    ]
+  },
+  "contact": {
+    "tagline": "Contact",
+    "title": "Get in Touch",
+    "subtitle": "Have questions or want to partner with us? Reach out below.",
+    "success_title": "Message Sent!",
+    "success_message": "We'll get back to you as soon as possible.",
+    "name_label": "Name",
+    "name_placeholder": "Your name",
+    "email_label": "Email",
+    "email_placeholder": "you@example.com",
+    "message_label": "Message",
+    "message_placeholder": "How can we help?",
+    "send_button": "Send Message",
+    "whatsapp": "Or reach us on WhatsApp"
+  },
+  "waitlist": {
+    "tagline": "Early Access",
+    "title_part1": "Join the ",
+    "title_part2": "Waitlist",
+    "subtitle": "Be among the first to experience MissionSkills when we launch.",
+    "success_title": "You're on the list!",
+    "success_message": "We'll notify you when MissionSkills is ready for beta access.",
+    "name_label": "Full Name",
+    "profile_label": "Profile",
+    "profiles": {
+      "student": "Student",
+      "jobSeekers": "Job Seeker",
+      "smes": "SME / Business"
+    }
+  },
+  "notFound": {
+    "title": "404",
+    "subtitle": "Oops! Page not found",
+    "message": "The page you are looking for doesn't exist or has been moved.",
+    "back_home": "Back to Home"
+  }
+}

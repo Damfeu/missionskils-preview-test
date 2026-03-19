@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { BookOpen, MapPin, Award, Bot } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const features = [
   { icon: BookOpen, title: "Micro Digital Courses", desc: "Short skill-based learning modules." },
@@ -8,20 +9,31 @@ const features = [
   { icon: Bot, title: "AI Learning Coach", desc: "Personalized guidance and mission recommendations." },
 ];
 
-const SolutionSection = () => (
-  <section className="section-padding">
-    <div className="container max-w-6xl mx-auto text-center">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-      >
-        <span className="inline-block text-xs font-semibold tracking-widest uppercase text-primary mb-4">Our Solution</span>
-        <h2 className="font-display text-3xl md:text-4xl font-bold mb-12">
-          Learn by <span className="gradient-text">Doing.</span>
-        </h2>
-      </motion.div>
+const SolutionSection = () => {
+  const { t } = useTranslation();
+  
+  const features = [
+    { icon: BookOpen, title: t("solution.features.courses.title"), desc: t("solution.features.courses.desc") },
+    { icon: MapPin, title: t("solution.features.missions.title"), desc: t("solution.features.missions.desc") },
+    { icon: Award, title: t("solution.features.validation.title"), desc: t("solution.features.validation.desc") },
+    { icon: Bot, title: t("solution.features.ai.title"), desc: t("solution.features.ai.desc") },
+  ];
+
+  return (
+    <section className="section-padding">
+      <div className="container max-w-6xl mx-auto text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="inline-block text-xs font-semibold tracking-widest uppercase text-primary mb-4">{t("solution.tagline")}</span>
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12">
+            {t("solution.title_part1", { defaultValue: "Learn by " })}
+            <span className="gradient-text">{t("solution.title_part2", { defaultValue: "Doing." })}</span>
+          </h2>
+        </motion.div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {features.map((f, i) => (
@@ -44,5 +56,6 @@ const SolutionSection = () => (
     </div>
   </section>
 );
+};
 
 export default SolutionSection;

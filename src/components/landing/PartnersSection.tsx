@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Lightbulb, Heart, GraduationCap, Cpu } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const partners = [
   { icon: Lightbulb, label: "Innovation Hubs" },
@@ -8,18 +9,28 @@ const partners = [
   { icon: Cpu, label: "Tech Ecosystem Partners" },
 ];
 
-const PartnersSection = () => (
-  <section className="section-padding">
-    <div className="container max-w-6xl mx-auto text-center">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="mb-12"
-      >
-        <span className="inline-block text-xs font-semibold tracking-widest uppercase text-primary mb-4">Partners</span>
-        <h2 className="font-display text-3xl md:text-4xl font-bold">Built with a Strong Ecosystem</h2>
-      </motion.div>
+const PartnersSection = () => {
+  const { t } = useTranslation();
+  
+  const partners = [
+    { icon: Lightbulb, label: t("partners.items.hubs") },
+    { icon: Heart, label: t("partners.items.ngos") },
+    { icon: GraduationCap, label: t("partners.items.training") },
+    { icon: Cpu, label: t("partners.items.ecosystem") },
+  ];
+
+  return (
+    <section className="section-padding">
+      <div className="container max-w-6xl mx-auto text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-12"
+        >
+          <span className="inline-block text-xs font-semibold tracking-widest uppercase text-primary mb-4">{t("partners.tagline")}</span>
+          <h2 className="font-display text-3xl md:text-4xl font-bold">{t("partners.title")}</h2>
+        </motion.div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {partners.map((p, i) => (
@@ -41,5 +52,6 @@ const PartnersSection = () => (
     </div>
   </section>
 );
+};
 
 export default PartnersSection;

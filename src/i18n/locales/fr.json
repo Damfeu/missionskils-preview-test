@@ -1,0 +1,156 @@
+{
+  "nav": {
+    "about": "À propos",
+    "waitlist": "Liste d'attente",
+    "contact": "Contact"
+  },
+  "hero": {
+    "tagline": "EdTech pour l'Impact",
+    "title_part1": "Apprenez les compétences numériques en résolvant des ",
+    "title_part2": "Missions Réelles.",
+    "description": "MissionSkills est une plateforme EdTech qui aide les jeunes à acquérir une réelle expérience professionnelle tout en apprenant via des programmes de formation numérique courts et des missions pratiques sur le terrain.",
+    "join_waitlist": "Rejoindre la liste d'attente",
+    "become_partner": "Devenir Partenaire",
+    "image_alt": "Jeune apprenant africain utilisant un smartphone avec des cartes UI montrant des missions et des badges"
+  },
+  "problem": {
+    "tagline": "Le Défi",
+    "title": "L'éducation ne prépare pas toujours les jeunes au monde du travail.",
+    "items": [
+      "De nombreux diplômés manquent d'expérience pratique",
+      "Le chômage des jeunes reste élevé",
+      "Les petites entreprises luttent avec la transformation numérique",
+      "La formation traditionnelle est trop théorique"
+    ]
+  },
+  "solution": {
+    "tagline": "Notre Solution",
+    "title": "Apprendre par la Pratique.",
+    "features": {
+      "courses": { "title": "Micro Cours Numériques", "desc": "Modules d'apprentissage courts basés sur les compétences." },
+      "missions": { "title": "Missions Réelles", "desc": "Les apprenants accomplissent des tâches pour de réelles entreprises locales." },
+      "validation": { "title": "Validation des Compétences", "desc": "Gagnez des badges et construisez un portfolio vérifié." },
+      "ai": { "title": "Coach d'Apprentissage IA", "desc": "Guidage personnalisé et recommandations de missions." }
+    }
+  },
+  "howItWorks": {
+    "tagline": "Processus",
+    "title": "Comment ça fonctionne",
+    "steps": [
+      { "title": "S'inscrire", "desc": "Créez votre profil d'apprenant gratuit." },
+      { "title": "Choisir une compétence", "desc": "Choisissez parmi le marketing numérique, le design, les données et plus encore." },
+      { "title": "Suivre la formation", "desc": "Complétez des modules d'apprentissage courts." },
+      { "title": "Compléter une mission réelle", "desc": "Appliquez vos compétences avec une entreprise locale." },
+      { "title": "Obtenir une certification", "desc": "Obtenez votre certification et construisez votre portfolio." }
+    ]
+  },
+  "useCases": {
+    "tagline": "Pour qui ?",
+    "title": "Conçu pour chaque apprenant",
+    "items": {
+      "students": { "title": "Étudiants", "desc": "Acquérir une expérience pratique avant l'obtention du diplôme." },
+      "jobSeekers": { "title": "Chercheurs d'emploi", "desc": "Développer des compétences numériques employables." },
+      "smes": { "title": "PME", "desc": "Accélérer leur présence numérique avec des jeunes formés." }
+    }
+  },
+  "featuresGrid": {
+    "tagline": "Fonctionnalités de la plateforme",
+    "title": "Tout ce dont vous avez besoin pour grandir",
+    "items": {
+      "dashboard": "Tableau de bord LMS intelligent",
+      "missions": "Missions géolocalisées",
+      "xp": "Gamification et système XP",
+      "portfolio": "Portfolio de compétences numériques",
+      "marketplace": "Marché de missions professionnelles",
+      "analytics": "Analyses d'apprentissage"
+    }
+  },
+  "impact": {
+    "tagline": "Impact",
+    "title": "Autonomisation des économies locales",
+    "description": "En comblant le fossé entre l'éducation et l'emploi, MissionSkills crée un impact durable dans les communautés.",
+    "stats": [
+      { "value": "5 000+", "label": "Jeunes ciblés" },
+      { "value": "1 000+", "label": "PME impactées" },
+      { "value": "50+", "label": "Compétences prévues" }
+    ]
+  },
+  "roadmap": {
+    "tagline": "Feuille de route",
+    "title": "Notre chemin à venir",
+    "items": [
+      { "year": "2026", "title": "Prototype & Pilote", "desc": "Lancement du MVP, intégration des premiers apprenants et partenaires PME." },
+      { "year": "2027", "title": "Déploiement National", "desc": "Développement à travers le pays avec toutes les fonctionnalités de la plateforme." },
+      { "year": "2028", "title": "Expansion Régionale", "desc": "Expansion vers les pays et marchés voisins." }
+    ]
+  },
+  "partners": {
+    "tagline": "Partenaires",
+    "title": "Construit avec un écosystème solide",
+    "items": {
+      "hubs": "Hubs d'innovation",
+      "ngos": "ONG",
+      "training": "Centres de formation",
+      "ecosystem": "Partenaires de l'écosystème technologique"
+    }
+  },
+  "finalCTA": {
+    "title": "Rejoignez le futur de l'apprentissage pratique.",
+    "subtitle": "Soyez parmi les premiers à découvrir une nouvelle façon d'apprendre des compétences numériques grâce à un impact réel.",
+    "cta": "Rejoindre la Bêta",
+    "disclaimer": "Prototype actuellement en développement dans le cadre d'une initiative d'incubation EdTech."
+  },
+  "footer": {
+    "description": "Autonomiser les jeunes grâce à un apprentissage numérique pratique.",
+    "privacy": "Politique de confidentialité",
+    "linkedin": "LinkedIn",
+    "rights": "Tous droits réservés."
+  },
+  "about": {
+    "tagline": "À propos",
+    "title_part1": "Construire l'avenir de ",
+    "title_part2": "l'Apprentissage Pratique",
+    "description": "MissionSkills est né d'un constat simple : l'éducation traditionnelle ne suffit pas à elle seule à préparer les jeunes à l'économie numérique.",
+    "pillars": [
+      { "title": "Notre Mission", "text": "Combler le fossé entre l'éducation et l'emploi en offrant aux jeunes une expérience numérique concrète grâce à des missions réelles dans leurs communautés locales." },
+      { "title": "Notre Vision", "text": "Un monde où chaque jeune a accès à des compétences pratiques et pertinentes qui ouvrent des opportunités de carrière significatives — peu importe où il vit." },
+      { "title": "Philosophie d'Apprentissage", "text": "Nous croyons que l'apprentissage est optimal lorsqu'il est appliqué. Notre approche combine des modules de micro-apprentissage avec des missions sur le terrain." }
+    ]
+  },
+  "contact": {
+    "tagline": "Contact",
+    "title": "Contactez-nous",
+    "subtitle": "Vous avez des questions ou souhaitez devenir partenaire ? Contactez-nous ci-dessous.",
+    "success_title": "Message Envoyé !",
+    "success_message": "Nous vous répondrons dès que possible.",
+    "name_label": "Nom",
+    "name_placeholder": "Votre nom",
+    "email_label": "Email",
+    "email_placeholder": "vous@exemple.com",
+    "message_label": "Message",
+    "message_placeholder": "Comment pouvons-nous vous aider ?",
+    "send_button": "Envoyer le message",
+    "whatsapp": "Ou contactez-nous sur WhatsApp"
+  },
+  "waitlist": {
+    "tagline": "Accès Anticipé",
+    "title_part1": "Rejoindre la ",
+    "title_part2": "Liste d'attente",
+    "subtitle": "Soyez parmi les premiers à découvrir MissionSkills lors de notre lancement.",
+    "success_title": "Vous êtes sur la liste !",
+    "success_message": "Nous vous informerons dès que MissionSkills sera prêt pour l'accès bêta.",
+    "name_label": "Nom Complet",
+    "profile_label": "Profil",
+    "profiles": {
+      "student": "Étudiant",
+      "jobSeekers": "Chercheur d'emploi",
+      "smes": "PME / Entreprise"
+    }
+  },
+  "notFound": {
+    "title": "404",
+    "subtitle": "Oups ! Page non trouvée",
+    "message": "La page que vous recherchez n'existe pas ou a été déplacée.",
+    "back_home": "Retour à l'accueil"
+  }
+}

@@ -2,13 +2,16 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const Navbar = () => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   const links = [
-    { label: "About", to: "/about" },
-    { label: "Contact", to: "/contact" },
+    { label: t("nav.about"), to: "/about" },
+    { label: t("nav.contact"), to: "/contact" },
   ];
 
   return (
@@ -25,8 +28,9 @@ const Navbar = () => {
               {l.label}
             </Link>
           ))}
+          <LanguageSwitcher />
           <Link to="/waitlist">
-            <Button size="sm" className="gradient-bg border-0">Join the Waitlist</Button>
+            <Button size="sm" className="gradient-bg border-0">{t("nav.waitlist")}</Button>
           </Link>
         </div>
 
@@ -43,8 +47,11 @@ const Navbar = () => {
               {l.label}
             </Link>
           ))}
+          <div className="py-2">
+            <LanguageSwitcher />
+          </div>
           <Link to="/waitlist" onClick={() => setOpen(false)}>
-            <Button size="sm" className="gradient-bg border-0 w-full mt-2">Join the Waitlist</Button>
+            <Button size="sm" className="gradient-bg border-0 w-full mt-2">{t("nav.waitlist")}</Button>
           </Link>
         </div>
       )}

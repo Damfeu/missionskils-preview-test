@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const steps = [
   { num: "01", title: "Sign up", desc: "Create your free learner profile." },
@@ -8,18 +9,28 @@ const steps = [
   { num: "05", title: "Earn certification", desc: "Get certified and build your portfolio." },
 ];
 
-const HowItWorksSection = () => (
-  <section className="section-padding bg-muted/50">
-    <div className="container max-w-4xl mx-auto">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="text-center mb-14"
-      >
-        <span className="inline-block text-xs font-semibold tracking-widest uppercase text-primary mb-4">Process</span>
-        <h2 className="font-display text-3xl md:text-4xl font-bold">How It Works</h2>
-      </motion.div>
+const HowItWorksSection = () => {
+  const { t } = useTranslation();
+  const stepsData = t("howItWorks.steps", { returnObjects: true }) as { title: string; desc: string }[];
+  
+  const steps = stepsData.map((step, i) => ({
+    num: `0${i + 1}`,
+    title: step.title,
+    desc: step.desc
+  }));
+
+  return (
+    <section className="section-padding bg-muted/50">
+      <div className="container max-w-4xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-14"
+        >
+          <span className="inline-block text-xs font-semibold tracking-widest uppercase text-primary mb-4">{t("howItWorks.tagline")}</span>
+          <h2 className="font-display text-3xl md:text-4xl font-bold">{t("howItWorks.title")}</h2>
+        </motion.div>
 
       <div className="relative">
         {/* Timeline line */}
@@ -49,5 +60,6 @@ const HowItWorksSection = () => (
     </div>
   </section>
 );
+};
 
 export default HowItWorksSection;
