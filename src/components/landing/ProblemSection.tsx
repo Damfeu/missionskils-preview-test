@@ -17,8 +17,8 @@ const ProblemSection = () => (
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
       >
-        <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-destructive mb-4">
-          <AlertTriangle size={14} /> The Problem
+        <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-muted-foreground mb-4">
+          The Challenge
         </span>
         <h2 className="font-display text-3xl md:text-4xl font-bold mb-10">
           Education does not always prepare young people for real work.
