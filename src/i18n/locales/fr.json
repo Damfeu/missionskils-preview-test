@@ -9,7 +9,7 @@
     "title_part1": "Apprenez les compétences numériques en résolvant des ",
     "title_part2": "Missions Réelles.",
     "description": "MissionSkills est une plateforme EdTech qui aide les jeunes à acquérir une réelle expérience professionnelle tout en apprenant via des programmes de formation numérique courts et des missions pratiques sur le terrain.",
-    "join_waitlist": "Rejoindre la liste d'attente",
+    "join_waitlist": "Essayer MissionSkills",
     "become_partner": "Devenir Partenaire",
     "image_alt": "Jeune apprenant africain utilisant un smartphone avec des cartes UI montrant des missions et des badges"
   },
@@ -97,8 +97,8 @@
   "finalCTA": {
     "title": "Rejoignez le futur de l'apprentissage pratique.",
     "subtitle": "Soyez parmi les premiers à découvrir une nouvelle façon d'apprendre des compétences numériques grâce à un impact réel.",
-    "cta": "Rejoindre la Bêta",
-    "disclaimer": "Prototype actuellement en développement dans le cadre d'une initiative d'incubation EdTech."
+    "cta": "Essayer le MVP",
+    "disclaimer": "MVP fonctionnel — testez dès maintenant le parcours apprenant complet."
   },
   "footer": {
     "description": "Autonomiser les jeunes grâce à un apprentissage numérique pratique.",

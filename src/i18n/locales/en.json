@@ -9,7 +9,7 @@
     "title_part1": "Learn Digital Skills by Solving ",
     "title_part2": "Real-World Missions.",
     "description": "MissionSkills is an EdTech platform that helps young people gain real professional experience while learning through short digital training programs and practical field missions.",
-    "join_waitlist": "Join the Waitlist",
+    "join_waitlist": "Try MissionSkills",
     "become_partner": "Become a Partner",
     "image_alt": "Young African learner using a smartphone with UI cards showing missions and badges"
   },
@@ -97,8 +97,8 @@
   "finalCTA": {
     "title": "Join the Future of Practical Learning.",
     "subtitle": "Be among the first to experience a new way of learning digital skills through real-world impact.",
-    "cta": "Join the Beta",
-    "disclaimer": "Prototype currently under development as part of an EdTech incubation initiative."
+    "cta": "Try the MVP",
+    "disclaimer": "Fully functional MVP — test the complete learner journey right now."
   },
   "footer": {
     "description": "Empowering youth through practical digital learning.",
