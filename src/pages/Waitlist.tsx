@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
@@ -7,12 +8,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useUser } from "@/hooks/useUser";
 
 const Waitlist = () => {
   const { t } = useTranslation();
+  const { register } = useUser();
+  const navigate = useNavigate();
   const profilesMap = t("waitlist.profiles", { returnObjects: true }) as Record<string, string>;
   const profiles = Object.values(profilesMap);
-  
+
   const [submitted, setSubmitted] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -21,6 +25,8 @@ const Waitlist = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
+    register(name, email, profile);
+    setTimeout(() => navigate("/dashboard"), 1200);
   };
 
   return (
