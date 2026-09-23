@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   MapPin, Clock, Zap, CheckCircle, ChevronRight,
-  Wrench, Target, FileText, Send, PlayCircle, Building2
+  Wrench, Target, FileText, Send, PlayCircle, Building2, Lock, Download, Paperclip, Briefcase
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -13,8 +15,23 @@ import {
 } from "@/components/ui/dialog";
 import AppNavbar from "@/components/AppNavbar";
 import { useUser } from "@/hooks/useUser";
-import { MISSIONS, Mission, getTaskXp } from "@/data/mockData";
+import { supabase } from "@/lib/supabase";
+import { COURSES, MISSIONS, Mission, CompanyMissionRow, companyMissionToMission, getTaskXp } from "@/data/mockData";
 import { toast } from "sonner";
+
+const downloadResource = (mission: Mission) => {
+  if (mission.resource.url) {
+    window.open(mission.resource.url, "_blank", "noopener,noreferrer");
+    return;
+  }
+  const blob = new Blob([mission.resource.content ?? ""], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = mission.resource.fileName;
+  a.click();
+  URL.revokeObjectURL(url);
+};
 
 /* ── Mission Dialog ──────────────────────────────────────────────── */
 const MissionDialog = ({
@@ -26,7 +43,9 @@ const MissionDialog = ({
 }) => {
   const { user, acceptMission, completeMissionTask, submitMission } = useUser();
   const [completing, setCompleting] = useState<string | null>(null);
+  const [accepting, setAccepting] = useState(false);
   const [submitText, setSubmitText] = useState("");
+  const [submitFile, setSubmitFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const isActive = user?.activeMission === mission.id;
@@ -39,38 +58,39 @@ const MissionDialog = ({
     return sum + (idx >= 0 ? getTaskXp(mission, idx) : 0);
   }, 0);
 
+  const requiredCourse = COURSES.find(c => c.id === mission.requiredCourseId);
+  const isUnlocked = user?.completedCourses?.includes(mission.requiredCourseId) ?? false;
+
   const hasActiveMissionElsewhere =
     user?.activeMission !== null && user?.activeMission !== mission.id;
 
-  const handleAccept = () => {
-    acceptMission(mission.id);
+  const handleAccept = async () => {
+    setAccepting(true);
+    await acceptMission(mission.id);
+    setAccepting(false);
     toast.success("Mission acceptée ! 🎯", {
       description: `Rendez-vous sur l'onglet Tâches pour commencer.`
     });
   };
 
-  const handleCompleteTask = (taskId: string, taskIndex: number, taskTitle: string) => {
+  const handleCompleteTask = async (taskId: string, taskIndex: number, taskTitle: string) => {
     if (completing) return;
     setCompleting(taskId);
     const xp = getTaskXp(mission, taskIndex);
-    setTimeout(() => {
-      completeMissionTask(mission.id, taskId, xp);
-      setCompleting(null);
-      toast.success(`+${xp} XP — Tâche complétée ! 💪`, { description: taskTitle });
-    }, 700);
+    await completeMissionTask(mission.id, taskId, xp);
+    setCompleting(null);
+    toast.success(`+${xp} XP — Tâche complétée ! 💪`, { description: taskTitle });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!submitText.trim()) return;
     setSubmitting(true);
-    setTimeout(() => {
-      submitMission(mission.id, submitText);
-      setSubmitting(false);
-      onClose();
-      toast.success("Mission soumise ! 🏆", {
-        description: `"${mission.title}" ajouté à votre portfolio.`
-      });
-    }, 1000);
+    await submitMission(mission.id, submitText, submitFile ?? undefined);
+    setSubmitting(false);
+    onClose();
+    toast.success("Mission soumise ! 🏆", {
+      description: `"${mission.title}" ajouté à votre portfolio.`
+    });
   };
 
   return (
@@ -102,7 +122,23 @@ const MissionDialog = ({
         </DialogDescription>
       </DialogHeader>
 
-      {isActive && !isCompleted ? (
+      {!isUnlocked && !isCompleted && !isActive ? (
+        /* ── Locked view : quiz du cours requis non réussi ── */
+        <div className="mt-4 space-y-4">
+          <BriefContent mission={mission} />
+          <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 flex items-start gap-3">
+            <Lock size={18} className="text-amber-600 shrink-0 mt-0.5" />
+            <div className="text-sm">
+              <p className="font-semibold text-amber-700">Mission verrouillée</p>
+              <p className="text-muted-foreground mt-1">
+                Réussissez le questionnaire du cours{" "}
+                <span className="font-semibold">{requiredCourse?.title ?? mission.requiredCourseId}</span>{" "}
+                pour débloquer cette mission.
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : isActive && !isCompleted ? (
         <Tabs defaultValue="tasks" className="mt-2">
           <TabsList className="w-full">
             <TabsTrigger value="brief" className="flex-1">
@@ -211,6 +247,16 @@ const MissionDialog = ({
                   onChange={e => setSubmitText(e.target.value)}
                   className="min-h-[90px] text-sm"
                 />
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground mb-1.5 flex items-center gap-1.5">
+                    <Paperclip size={12} /> Joindre un fichier (optionnel : capture, PDF, image...)
+                  </label>
+                  <Input
+                    type="file"
+                    onChange={e => setSubmitFile(e.target.files?.[0] ?? null)}
+                    className="text-xs"
+                  />
+                </div>
                 <Button
                   className="w-full gradient-bg border-0"
                   onClick={handleSubmit}
@@ -233,11 +279,23 @@ const MissionDialog = ({
             </div>
           </div>
           {user?.missionSubmissions?.[mission.id] && (
-            <div>
+            <div className="space-y-2">
               <p className="text-xs font-semibold text-muted-foreground mb-1 uppercase tracking-wide">Votre livrable soumis</p>
-              <p className="text-sm bg-muted/50 rounded-lg p-3 border border-border">
-                {user.missionSubmissions[mission.id]}
-              </p>
+              {user.missionSubmissions[mission.id].text && (
+                <p className="text-sm bg-muted/50 rounded-lg p-3 border border-border">
+                  {user.missionSubmissions[mission.id].text}
+                </p>
+              )}
+              {user.missionSubmissions[mission.id].fileUrl && (
+                <a
+                  href={user.missionSubmissions[mission.id].fileUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm text-primary hover:underline flex items-center gap-1.5"
+                >
+                  <Paperclip size={13} /> {user.missionSubmissions[mission.id].fileName ?? "Fichier joint"}
+                </a>
+              )}
             </div>
           )}
         </div>
@@ -250,8 +308,8 @@ const MissionDialog = ({
               Terminez votre mission en cours avant d'en accepter une nouvelle.
             </div>
           ) : (
-            <Button className="w-full gradient-bg border-0" onClick={handleAccept}>
-              <Target size={16} className="mr-2" /> Accepter cette mission
+            <Button className="w-full gradient-bg border-0" onClick={handleAccept} disabled={accepting}>
+              <Target size={16} className="mr-2" /> {accepting ? "Acceptation..." : "Accepter cette mission"}
             </Button>
           )}
         </div>
@@ -302,19 +360,50 @@ const BriefContent = ({ mission }: { mission: Mission }) => (
         ))}
       </div>
     </div>
+    {(mission.resource.content || mission.resource.url) && (
+      <Button variant="outline" size="sm" onClick={() => downloadResource(mission)} className="text-xs">
+        <Download size={13} className="mr-1.5" /> Télécharger les ressources ({mission.resource.fileName})
+      </Button>
+    )}
   </div>
 );
 
 /* ── Main page ───────────────────────────────────────────────────── */
 const Missions = () => {
-  const { user } = useUser();
+  const { user, loading } = useUser();
   const [selectedMission, setSelectedMission] = useState<Mission | null>(null);
+  const [companyMissions, setCompanyMissions] = useState<Mission[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("company_missions")
+      .select("*")
+      .eq("status", "approved")
+      .then(({ data }) => {
+        setCompanyMissions(((data as CompanyMissionRow[]) ?? []).map(companyMissionToMission));
+      });
+  }, []);
+
+  const allMissions = [...MISSIONS, ...companyMissions];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <AppNavbar />
+        <main className="pt-24 pb-16 px-4 text-center text-muted-foreground">Chargement...</main>
+      </div>
+    );
+  }
 
   const getStatus = (mission: Mission) => {
     if (user?.completedMissions?.includes(mission.id)) return "completed";
     if (user?.activeMission === mission.id) return "active";
     return "open";
   };
+
+  const isLocked = (mission: Mission) =>
+    !(user?.completedCourses?.includes(mission.requiredCourseId) ?? false) &&
+    getStatus(mission) === "open";
 
   const completedTasks = (missionId: string) =>
     user?.completedMissionTasks?.[missionId]?.length ?? 0;
@@ -324,20 +413,29 @@ const Missions = () => {
       <AppNavbar />
       <main className="pt-24 pb-16 px-4">
         <div className="container max-w-4xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-            <h1 className="font-display text-2xl md:text-3xl font-bold mb-2">
-              Marché de <span className="gradient-text">Missions</span>
-            </h1>
-            <p className="text-muted-foreground">
-              Aidez de vraies entreprises locales et construisez votre portfolio professionnel.
-            </p>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8 flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h1 className="font-display text-2xl md:text-3xl font-bold mb-2">
+                Marché de <span className="gradient-text">Missions</span>
+              </h1>
+              <p className="text-muted-foreground">
+                Aidez de vraies entreprises locales et construisez votre portfolio professionnel.
+              </p>
+            </div>
+            <Link to="/poster-une-mission">
+              <Button variant="outline" size="sm">
+                <Briefcase size={14} className="mr-1.5" /> Vous êtes une entreprise ? Proposez une mission
+              </Button>
+            </Link>
           </motion.div>
 
           <div className="space-y-4">
-            {MISSIONS.map((mission, i) => {
+            {allMissions.map((mission, i) => {
               const status = getStatus(mission);
+              const locked = isLocked(mission);
               const doneTasks = completedTasks(mission.id);
               const progressPct = (doneTasks / mission.tasks.length) * 100;
+              const requiredCourse = COURSES.find(c => c.id === mission.requiredCourseId);
 
               return (
                 <motion.div
@@ -350,6 +448,8 @@ const Missions = () => {
                       ? "border-primary/30 bg-primary/5"
                       : status === "completed"
                       ? "border-green-500/20 bg-green-500/5"
+                      : locked
+                      ? "border-border bg-muted/20 opacity-80"
                       : "border-border bg-background"
                   }`}
                   onClick={() => setSelectedMission(mission)}
@@ -366,6 +466,11 @@ const Missions = () => {
                         {status === "completed" && (
                           <span className="text-xs font-semibold text-green-600 bg-green-500/10 px-2 py-0.5 rounded-full">
                             ✓ Terminée
+                          </span>
+                        )}
+                        {locked && (
+                          <span className="text-xs font-semibold text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <Lock size={10} /> Verrouillée
                           </span>
                         )}
                         <span className="text-xs text-muted-foreground">{mission.companyType}</span>
@@ -387,6 +492,12 @@ const Missions = () => {
                           </span>
                         ))}
                       </div>
+
+                      {locked && requiredCourse && (
+                        <p className="text-xs text-amber-700 mb-3">
+                          🔒 Réussissez le cours "{requiredCourse.title}" pour débloquer.
+                        </p>
+                      )}
 
                       {/* Meta */}
                       <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">

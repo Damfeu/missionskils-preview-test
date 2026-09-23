@@ -18,15 +18,25 @@ const Waitlist = () => {
   const profiles = Object.values(profilesMap);
 
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [profile, setProfile] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    register(name, email, profile);
-    setTimeout(() => navigate("/dashboard"), 1200);
+    setSubmitting(true);
+    setErrorMsg("");
+    try {
+      await register(name, email, profile);
+      setSubmitted(true);
+      setTimeout(() => navigate("/dashboard"), 1200);
+    } catch {
+      setErrorMsg("Inscription impossible pour le moment. Vérifiez votre connexion et réessayez.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -83,8 +93,11 @@ const Waitlist = () => {
                   ))}
                 </div>
               </div>
-              <Button type="submit" className="w-full gradient-bg border-0 text-base" size="lg" disabled={!name || !email || !profile}>
-                {t("hero.join_waitlist")} <ArrowRight className="ml-2" size={18} />
+              {errorMsg && (
+                <p className="text-sm text-destructive text-center">{errorMsg}</p>
+              )}
+              <Button type="submit" className="w-full gradient-bg border-0 text-base" size="lg" disabled={!name || !email || !profile || submitting}>
+                {submitting ? "Inscription en cours..." : t("hero.join_waitlist")} <ArrowRight className="ml-2" size={18} />
               </Button>
             </motion.form>
           )}

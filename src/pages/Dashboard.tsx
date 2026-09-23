@@ -11,14 +11,14 @@ import { useUser } from "@/hooks/useUser";
 import { COURSES, MISSIONS, BADGES } from "@/data/mockData";
 
 const Dashboard = () => {
-  const { user, level, xpProgress, xpToNextLevel } = useUser();
+  const { user, loading, level, xpProgress, xpToNextLevel } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) navigate("/waitlist");
-  }, [user, navigate]);
+    if (!loading && !user) navigate("/waitlist");
+  }, [loading, user, navigate]);
 
-  if (!user) return null;
+  if (loading || !user) return null;
 
   const firstName = user.name.split(" ")[0];
   const activeMission = MISSIONS.find(m => m.id === user.activeMission);

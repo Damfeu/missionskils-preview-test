@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle, Clock, Zap, Lock, PlayCircle, BookOpen } from "lucide-react";
+import { CheckCircle, Clock, Zap, PlayCircle, BookOpen, ArrowLeft, BookText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -11,17 +11,28 @@ import {
   DialogDescription
 } from "@/components/ui/dialog";
 import AppNavbar from "@/components/AppNavbar";
+import Quiz from "@/components/Quiz";
 import { useUser } from "@/hooks/useUser";
-import { COURSES, Course, getModuleXp } from "@/data/mockData";
+import { COURSES, Course, Module, getModuleXp } from "@/data/mockData";
 import { toast } from "sonner";
 
 const CATEGORIES = ["Tous", "Développement", "Marketing", "Design", "Social Media", "Data", "Commerce"];
 
 const Courses = () => {
-  const { user, completeModule } = useUser();
+  const { user, loading, completeModule, submitQuiz } = useUser();
   const [activeCategory, setActiveCategory] = useState("Tous");
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [completing, setCompleting] = useState<string | null>(null);
+  const [viewingModule, setViewingModule] = useState<Module | null>(null);
+  const [markingDone, setMarkingDone] = useState(false);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <AppNavbar />
+        <main className="pt-24 pb-16 px-4 text-center text-muted-foreground">Chargement...</main>
+      </div>
+    );
+  }
 
   const filtered = COURSES.filter(
     c => activeCategory === "Tous" || c.category === activeCategory
@@ -30,36 +41,53 @@ const Courses = () => {
   const getCompletedModules = (courseId: string): string[] =>
     user?.completedModules?.[courseId] ?? [];
 
-  const handleCompleteModule = (
-    course: Course,
-    moduleId: string,
-    moduleIndex: number
-  ) => {
-    const alreadyDone = getCompletedModules(course.id).includes(moduleId);
-    if (alreadyDone || completing) return;
-
-    setCompleting(moduleId);
+  const handleMarkDone = async (course: Course, moduleId: string, moduleIndex: number) => {
+    if (markingDone) return;
+    setMarkingDone(true);
     const xp = getModuleXp(course, moduleIndex);
-    const completedSoFar = getCompletedModules(course.id);
-    const isLastModule =
-      course.moduleList.every(
-        m => m.id === moduleId || completedSoFar.includes(m.id)
-      );
+    await completeModule(course.id, moduleId, xp);
+    setMarkingDone(false);
+    setViewingModule(null);
+    toast.success(`+${xp} XP gagnés ! 🎉`, {
+      description: course.moduleList[moduleIndex].title
+    });
+  };
 
-    setTimeout(() => {
-      completeModule(course.id, moduleId, xp, isLastModule);
-      setCompleting(null);
-
-      if (isLastModule) {
-        toast.success("Cours complété ! 🎓", {
-          description: `"${course.title}" ajouté à votre portfolio.`
-        });
-      } else {
-        toast.success(`+${xp} XP gagnés ! 🎉`, {
-          description: course.moduleList[moduleIndex].title
-        });
-      }
-    }, 800);
+  const ModuleContentView = ({ course, module }: { course: Course; module: Module }) => {
+    const moduleIndex = course.moduleList.findIndex(m => m.id === module.id);
+    const isDone = getCompletedModules(course.id).includes(module.id);
+    return (
+      <div className="space-y-4">
+        <button
+          onClick={() => setViewingModule(null)}
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft size={14} /> Retour aux modules
+        </button>
+        <div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+            <BookText size={13} /> Contenu du module · {module.duration}
+          </div>
+          <h3 className="font-display font-bold text-lg mb-3">{module.title}</h3>
+          <div className="rounded-xl border border-border bg-muted/30 p-4 text-sm leading-relaxed whitespace-pre-line">
+            {module.content}
+          </div>
+        </div>
+        {isDone ? (
+          <div className="flex items-center gap-2 justify-center text-green-600 font-semibold bg-green-500/10 rounded-xl py-3">
+            <CheckCircle size={16} /> Module déjà complété
+          </div>
+        ) : (
+          <Button
+            className="w-full gradient-bg border-0"
+            onClick={() => handleMarkDone(course, module.id, moduleIndex)}
+            disabled={markingDone}
+          >
+            {markingDone ? "Enregistrement..." : `J'ai terminé ce module (+${getModuleXp(course, moduleIndex)} XP)`}
+          </Button>
+        )}
+      </div>
+    );
   };
 
   const CourseDialog = ({ course }: { course: Course }) => {
@@ -67,21 +95,26 @@ const Courses = () => {
     const completedCount = completedModules.length;
     const totalModules = course.moduleList.length;
     const progressPercent = (completedCount / totalModules) * 100;
-    const earnedXp = course.moduleList
-      .filter(m => completedModules.includes(m.id))
-      .reduce((sum, _, i) => {
-        const realIndex = course.moduleList.findIndex(
-          m => completedModules.includes(m.id) && m === course.moduleList[i]
-        );
-        return sum + getModuleXp(course, realIndex);
-      }, 0);
+    const allModulesDone = completedCount === totalModules;
 
     const xpEarned = completedModules.reduce((sum, mId) => {
       const idx = course.moduleList.findIndex(m => m.id === mId);
       return sum + (idx >= 0 ? getModuleXp(course, idx) : 0);
     }, 0);
 
+    const quizResult = user?.quizResults?.[course.id];
     const isCourseComplete = user?.completedCourses.includes(course.id);
+
+    if (viewingModule) {
+      return (
+        <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+          <DialogHeader className="sr-only">
+            <DialogTitle>{viewingModule.title}</DialogTitle>
+          </DialogHeader>
+          <ModuleContentView course={course} module={viewingModule} />
+        </DialogContent>
+      );
+    }
 
     return (
       <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
@@ -113,75 +146,88 @@ const Courses = () => {
           <Progress value={progressPercent} className="h-2" />
         </div>
 
-        {/* Module list */}
-        <div className="space-y-2">
-          {course.moduleList.map((mod, index) => {
-            const isDone = completedModules.includes(mod.id);
-            const isBeingCompleted = completing === mod.id;
-            const moduleXp = getModuleXp(course, index);
+        {!allModulesDone && (
+          <div className="space-y-2">
+            {course.moduleList.map((mod, index) => {
+              const isDone = completedModules.includes(mod.id);
+              const moduleXp = getModuleXp(course, index);
 
-            return (
-              <div
-                key={mod.id}
-                className={`flex items-center gap-3 rounded-xl border p-3.5 transition-colors ${
-                  isDone
-                    ? "bg-green-500/5 border-green-500/20"
-                    : "bg-background border-border"
-                }`}
-              >
-                <div className="shrink-0">
-                  {isDone ? (
-                    <CheckCircle size={20} className="text-green-500" />
-                  ) : (
-                    <div className="w-5 h-5 rounded-full border-2 border-border flex items-center justify-center text-xs text-muted-foreground font-bold">
-                      {index + 1}
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-medium leading-tight ${isDone ? "text-muted-foreground line-through" : ""}`}>
-                    {mod.title}
-                  </p>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs text-muted-foreground flex items-center gap-1">
-                      <Clock size={10} /> {mod.duration}
-                    </span>
-                    <span className="text-xs font-semibold text-primary">
-                      +{moduleXp} XP
-                    </span>
-                  </div>
-                </div>
-
-                {isDone ? (
-                  <span className="text-xs text-green-600 font-semibold shrink-0">Complété</span>
-                ) : (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="shrink-0 text-xs h-8 px-3"
-                    onClick={() => handleCompleteModule(course, mod.id, index)}
-                    disabled={isBeingCompleted || !!completing}
-                  >
-                    {isBeingCompleted ? (
-                      <span className="flex items-center gap-1">
-                        <span className="animate-spin">⏳</span> ...
-                      </span>
+              return (
+                <div
+                  key={mod.id}
+                  className={`flex items-center gap-3 rounded-xl border p-3.5 transition-colors ${
+                    isDone
+                      ? "bg-green-500/5 border-green-500/20"
+                      : "bg-background border-border"
+                  }`}
+                >
+                  <div className="shrink-0">
+                    {isDone ? (
+                      <CheckCircle size={20} className="text-green-500" />
                     ) : (
+                      <div className="w-5 h-5 rounded-full border-2 border-border flex items-center justify-center text-xs text-muted-foreground font-bold">
+                        {index + 1}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm font-medium leading-tight ${isDone ? "text-muted-foreground line-through" : ""}`}>
+                      {mod.title}
+                    </p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Clock size={10} /> {mod.duration}
+                      </span>
+                      <span className="text-xs font-semibold text-primary">
+                        +{moduleXp} XP
+                      </span>
+                    </div>
+                  </div>
+
+                  {isDone ? (
+                    <span className="text-xs text-green-600 font-semibold shrink-0">Complété</span>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="shrink-0 text-xs h-8 px-3"
+                      onClick={() => setViewingModule(mod)}
+                    >
                       <span className="flex items-center gap-1">
                         <PlayCircle size={13} /> Suivre
                       </span>
-                    )}
-                  </Button>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                    </Button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {allModulesDone && !isCourseComplete && course.quiz && (
+          <div className="space-y-3">
+            <div className="rounded-xl border border-primary/30 bg-primary/5 p-3 text-sm font-semibold flex items-center gap-2">
+              <BookText size={16} className="text-primary" />
+              Tous les modules sont vus — passez le questionnaire final
+            </div>
+            <Quiz
+              quiz={course.quiz}
+              onComplete={(score) => submitQuiz(course.id, score, course.quiz!.passingScore)}
+            />
+          </div>
+        )}
 
         {isCourseComplete && (
-          <div className="mt-3 flex items-center gap-2 justify-center text-green-600 font-semibold bg-green-500/10 rounded-xl py-3">
-            <CheckCircle size={18} /> Cours complété — ajouté à votre portfolio !
+          <div className="mt-1 space-y-2">
+            <div className="flex items-center gap-2 justify-center text-green-600 font-semibold bg-green-500/10 rounded-xl py-3">
+              <CheckCircle size={18} /> Cours complété — ajouté à votre portfolio !
+            </div>
+            {quizResult && (
+              <p className="text-xs text-center text-muted-foreground">
+                Score final au questionnaire : {quizResult.score}%
+              </p>
+            )}
           </div>
         )}
       </DialogContent>
@@ -283,7 +329,7 @@ const Courses = () => {
                       <Button
                         size="sm"
                         className="gradient-bg border-0"
-                        onClick={() => setSelectedCourse(course)}
+                        onClick={() => { setSelectedCourse(course); setViewingModule(null); }}
                       >
                         {inProgress ? "Continuer" : "Commencer"}
                       </Button>
@@ -299,7 +345,7 @@ const Courses = () => {
       {/* Course detail dialog */}
       <Dialog
         open={!!selectedCourse}
-        onOpenChange={open => { if (!open) setSelectedCourse(null); }}
+        onOpenChange={open => { if (!open) { setSelectedCourse(null); setViewingModule(null); } }}
       >
         {selectedCourse && <CourseDialog course={selectedCourse} />}
       </Dialog>
