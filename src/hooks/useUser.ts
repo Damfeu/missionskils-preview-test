@@ -29,8 +29,6 @@ export interface UserProfile {
   badges: string[];
 }
 
-const PROFILE_ID_KEY = "missionskills_profile_id";
-
 async function loadUser(profileId: string): Promise<UserProfile | null> {
   const { data: profileRow, error: profileError } = await supabase
     .from("profiles")
@@ -105,39 +103,69 @@ function useUserState() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const profileId = localStorage.getItem(PROFILE_ID_KEY);
-    if (!profileId) {
-      setLoading(false);
-      return;
-    }
-    loadUser(profileId).then(u => {
-      setUser(u);
-      setLoading(false);
+    let active = true;
+
+    supabase.auth.getSession().then(async ({ data }) => {
+      const uid = data.session?.user.id;
+      const u = uid ? await loadUser(uid) : null;
+      if (active) {
+        setUser(u);
+        setLoading(false);
+      }
     });
+
+    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const uid = session?.user.id;
+      const u = uid ? await loadUser(uid) : null;
+      if (active) setUser(u);
+    });
+
+    return () => {
+      active = false;
+      listener.subscription.unsubscribe();
+    };
   }, []);
 
   const refresh = useCallback(async () => {
-    const profileId = localStorage.getItem(PROFILE_ID_KEY);
-    if (!profileId) return;
-    const u = await loadUser(profileId);
+    const { data } = await supabase.auth.getSession();
+    const uid = data.session?.user.id;
+    if (!uid) return;
+    const u = await loadUser(uid);
     setUser(u);
   }, []);
 
-  const register = useCallback(async (name: string, email: string, profile: string) => {
-    const id = crypto.randomUUID();
-    const { error } = await supabase.from("profiles").insert({
-      id, name, email, profile, xp: 0, badges: ["first-step"]
-    });
+  const register = useCallback(async (name: string, email: string, profile: string, password: string) => {
+    const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) throw error;
-    localStorage.setItem(PROFILE_ID_KEY, id);
+    const uid = data.user?.id;
+    if (!uid) throw new Error("Inscription impossible : aucune session créée.");
+
+    const { error: insertError } = await supabase.from("profiles").insert({
+      id: uid, name, email, profile, xp: 0, badges: ["first-step"]
+    });
+    if (insertError) throw insertError;
+
     const newUser: UserProfile = {
-      id, name, email, profile, xp: 0,
+      id: uid, name, email, profile, xp: 0,
       completedCourses: [], completedModules: {}, quizResults: {},
       activeMission: null, completedMissions: [], completedMissionTasks: {},
       missionSubmissions: {}, badges: ["first-step"]
     };
     setUser(newUser);
     return newUser;
+  }, []);
+
+  const login = useCallback(async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    const uid = data.user.id;
+    const u = await loadUser(uid);
+    if (!u) {
+      await supabase.auth.signOut();
+      throw new Error("Ce compte n'est pas un compte apprenant. Utilisez la connexion entreprise.");
+    }
+    setUser(u);
+    return u;
   }, []);
 
   const addBadgeAndXp = useCallback(async (profileId: string, xpDelta: number, badgesToAdd: string[]) => {
@@ -284,8 +312,8 @@ function useUserState() {
     }, { onConflict: "profile_id,mission_id" });
   }, [user]);
 
-  const logout = useCallback(() => {
-    localStorage.removeItem(PROFILE_ID_KEY);
+  const logout = useCallback(async () => {
+    await supabase.auth.signOut();
     setUser(null);
   }, []);
 
@@ -295,7 +323,7 @@ function useUserState() {
   const xpToNextLevel = 200 - xpInLevel;
 
   return {
-    user, loading, register, completeModule, submitQuiz, acceptMission,
+    user, loading, register, login, completeModule, submitQuiz, acceptMission,
     completeMissionTask, submitMission, logout, refresh, level, xpProgress, xpToNextLevel
   };
 }

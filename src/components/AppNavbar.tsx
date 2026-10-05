@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { LayoutDashboard, BookOpen, Target, LogOut, Menu, X, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/useUser";
+import logo from "@/assets/logo-horizontal.png";
 
 const AppNavbar = () => {
   const { user, logout, level } = useUser();
@@ -24,8 +25,8 @@ const AppNavbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
       <div className="container max-w-6xl mx-auto flex items-center justify-between h-16 px-4">
-        <Link to="/dashboard" className="font-display text-xl font-bold">
-          <span className="gradient-text">Mission</span>Skills
+        <Link to="/dashboard" className="flex items-center">
+          <img src={logo} alt="MissionSkills" className="h-8 w-auto" />
         </Link>
 
         <div className="hidden md:flex items-center gap-6">

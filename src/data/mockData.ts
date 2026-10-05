@@ -164,7 +164,7 @@ export const COURSES: Course[] = [
     xp: 120,
     emoji: "🖌️",
     category: "Design",
-    gradient: "from-purple-500/10 to-pink-500/10 border-purple-500/20",
+    gradient: "from-brand-yellow/15 to-orange-500/10 border-brand-yellow/30",
     moduleList: [
       {
         id: "m1", title: "Interface Canva et outils de base", duration: "8 min",
@@ -332,7 +332,7 @@ export const COURSES: Course[] = [
     xp: 120,
     emoji: "🖥️",
     category: "Développement",
-    gradient: "from-indigo-500/10 to-blue-500/10 border-indigo-500/20",
+    gradient: "from-primary/10 to-sky-500/10 border-primary/20",
     moduleList: [
       {
         id: "m1", title: "Héberger et installer WordPress", duration: "12 min",
@@ -410,7 +410,7 @@ export const COURSES: Course[] = [
     xp: 150,
     emoji: "📲",
     category: "Développement",
-    gradient: "from-violet-500/10 to-purple-500/10 border-violet-500/20",
+    gradient: "from-sky-500/10 to-brand-yellow/10 border-sky-500/20",
     moduleList: [
       {
         id: "m1", title: "Introduction au No-Code et ses outils", duration: "12 min",

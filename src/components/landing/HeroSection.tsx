@@ -9,8 +9,8 @@ const HeroSection = () => {
   const { t } = useTranslation();
   return (
     <section className="relative overflow-hidden pt-28 pb-20 md:pt-36 md:pb-28 px-4">
-      {/* Background gradient blobs */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full opacity-20 blur-3xl" style={{ background: "var(--gradient-primary)" }} />
+      {/* Tache de fond, couleur pleine */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full opacity-10 blur-3xl bg-primary" />
 
       <div className="container max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center relative z-10">
       <motion.div
@@ -49,7 +49,7 @@ const HeroSection = () => {
         className="flex justify-center"
       >
         <div className="relative">
-          <div className="absolute inset-0 rounded-3xl blur-2xl opacity-30" style={{ background: "var(--gradient-primary)" }} />
+          <div className="absolute inset-0 rounded-3xl blur-2xl opacity-15 bg-primary" />
           <img
             src={heroImage}
             alt={t("hero.image_alt")}

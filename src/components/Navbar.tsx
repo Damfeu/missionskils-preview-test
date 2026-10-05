@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
+import logo from "@/assets/logo-horizontal.png";
 
 const Navbar = () => {
   const { t } = useTranslation();
@@ -18,8 +19,8 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
       <div className="container max-w-6xl mx-auto flex items-center justify-between h-16 px-4">
-        <Link to="/" className="font-display text-xl font-bold">
-          <span className="gradient-text">Mission</span>Skills
+        <Link to="/" className="flex items-center">
+          <img src={logo} alt="MissionSkills" className="h-8 w-auto" />
         </Link>
 
         {/* Desktop */}
@@ -30,6 +31,9 @@ const Navbar = () => {
             </Link>
           ))}
           <LanguageSwitcher />
+          <Link to="/connexion" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            Connexion
+          </Link>
           <Link to="/waitlist">
             <Button size="sm" className="gradient-bg border-0">{t("nav.waitlist")}</Button>
           </Link>
@@ -51,6 +55,9 @@ const Navbar = () => {
           <div className="py-2">
             <LanguageSwitcher />
           </div>
+          <Link to="/connexion" onClick={() => setOpen(false)} className="block py-2 text-sm font-medium text-muted-foreground">
+            Connexion
+          </Link>
           <Link to="/waitlist" onClick={() => setOpen(false)}>
             <Button size="sm" className="gradient-bg border-0 w-full mt-2">{t("nav.waitlist")}</Button>
           </Link>

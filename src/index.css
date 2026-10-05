@@ -6,51 +6,55 @@
 
 @layer base {
   :root {
+    /* Identité visuelle MissionSkills : bleu #2952A1, orange #FF9C00, jaune #FFE401 */
     --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    --foreground: 220 47% 13%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 220 47% 13%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 220 47% 13%;
 
-    --primary: 217 84% 53%;
+    --primary: 220 59% 40%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 263 70% 58%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 37 100% 50%;
+    --secondary-foreground: 220 47% 13%;
 
-    --muted: 220 14% 96%;
+    --muted: 220 20% 96%;
     --muted-foreground: 220 9% 46%;
 
-    --accent: 263 70% 58%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 220 20% 95%;
+    --accent-foreground: 220 47% 13%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 217 84% 53%;
+    --ring: 220 59% 40%;
 
     --radius: 0.75rem;
 
-    --gradient-primary: linear-gradient(135deg, hsl(217 84% 53%), hsl(263 70% 58%));
-    --gradient-subtle: linear-gradient(135deg, hsl(217 84% 53% / 0.05), hsl(263 70% 58% / 0.05));
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(220 14% 98%));
+    /* Jaune de marque, réservé aux accents ponctuels (badges, étoiles, highlights) */
+    --brand-yellow: 54 100% 50%;
+    --brand-yellow-foreground: 220 47% 13%;
+
+    --brand-flat: hsl(220 59% 40%);
+    --brand-flat-subtle: hsl(220 59% 40% / 0.06);
 
     --font-display: 'Space Grotesk', sans-serif;
     --font-body: 'Inter', sans-serif;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 217 84% 53%;
+    --sidebar-primary: 220 59% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 263 70% 58%;
-    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-accent: 37 100% 50%;
+    --sidebar-accent-foreground: 220 47% 13%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217 84% 53%;
+    --sidebar-ring: 220 59% 40%;
   }
 }
 
@@ -69,30 +73,17 @@
 }
 
 @layer utilities {
+  /* Couleur pleine de marque — volontairement pas de dégradé */
   .gradient-text {
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: hsl(var(--primary));
   }
 
   .gradient-bg {
-    background: var(--gradient-primary);
+    background: hsl(var(--primary));
   }
 
   .gradient-border {
-    position: relative;
-    border: 1px solid transparent;
-    background-clip: padding-box;
-  }
-
-  .gradient-border::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: inherit;
-    background: var(--gradient-primary);
-    z-index: -1;
+    border: 1px solid hsl(var(--primary) / 0.3);
   }
 
   .section-padding {

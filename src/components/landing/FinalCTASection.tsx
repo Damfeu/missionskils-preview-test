@@ -13,8 +13,7 @@ const FinalCTASection = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="rounded-3xl p-10 md:p-16 text-center text-primary-foreground relative overflow-hidden"
-          style={{ background: "var(--gradient-primary)" }}
+          className="rounded-3xl p-10 md:p-16 text-center text-primary-foreground relative overflow-hidden bg-primary"
         >
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 relative z-10">

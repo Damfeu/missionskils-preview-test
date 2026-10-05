@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
@@ -22,6 +22,7 @@ const Waitlist = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [profile, setProfile] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,11 +30,11 @@ const Waitlist = () => {
     setSubmitting(true);
     setErrorMsg("");
     try {
-      await register(name, email, profile);
+      await register(name, email, profile, password);
       setSubmitted(true);
       setTimeout(() => navigate("/dashboard"), 1200);
-    } catch {
-      setErrorMsg("Inscription impossible pour le moment. Vérifiez votre connexion et réessayez.");
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : "Inscription impossible pour le moment. Vérifiez votre connexion et réessayez.");
     } finally {
       setSubmitting(false);
     }
@@ -75,6 +76,10 @@ const Waitlist = () => {
                 <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("contact.email_placeholder")} required className="mt-1" />
               </div>
               <div>
+                <Label htmlFor="password">Mot de passe</Label>
+                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="6 caractères minimum" minLength={6} required className="mt-1" />
+              </div>
+              <div>
                 <Label>{t("waitlist.profile_label")}</Label>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {profiles.map((p) => (
@@ -96,9 +101,13 @@ const Waitlist = () => {
               {errorMsg && (
                 <p className="text-sm text-destructive text-center">{errorMsg}</p>
               )}
-              <Button type="submit" className="w-full gradient-bg border-0 text-base" size="lg" disabled={!name || !email || !profile || submitting}>
+              <Button type="submit" className="w-full gradient-bg border-0 text-base" size="lg" disabled={!name || !email || !profile || password.length < 6 || submitting}>
                 {submitting ? "Inscription en cours..." : t("hero.join_waitlist")} <ArrowRight className="ml-2" size={18} />
               </Button>
+              <p className="text-sm text-center text-muted-foreground">
+                Déjà un compte ?{" "}
+                <Link to="/connexion" className="text-primary hover:underline font-medium">Se connecter</Link>
+              </p>
             </motion.form>
           )}
         </div>

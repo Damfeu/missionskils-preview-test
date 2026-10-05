@@ -134,3 +134,71 @@ create policy "company_missions_insert" on company_missions
 
 -- Mise à jour publique (utilisée uniquement par /admin en pratique).
 create policy "company_missions_update" on company_missions for update using (true);
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Migration vers Supabase Auth : vrais comptes (email + mot de passe) pour
+-- les apprenants ET pour les entreprises, au lieu d'un UUID anonyme généré
+-- côté client. Permet une page "Connexion" distincte de "Inscription", et
+-- lie chaque mission postée à un compte entreprise précis.
+--
+-- ⚠️ ÉTAPE MANUELLE AVANT DE JOUER CE SCRIPT :
+-- Dans le dashboard Supabase : Authentication > Providers > Email >
+-- désactive "Confirm email" (sinon les comptes ne sont pas actifs tout de
+-- suite après inscription).
+--
+-- ⚠️ Les anciens profils de test (créés avant l'auth réelle, UUID généré
+-- côté client) n'ont PAS de compte auth.users correspondant. L'ajout de la
+-- contrainte de clé étrangère ci-dessous échouera s'il reste de telles
+-- lignes dans `profiles`. Si le script échoue sur cette contrainte,
+-- vide d'abord manuellement les tables de test dans le SQL Editor :
+--   delete from mission_progress;
+--   delete from course_progress;
+--   delete from profiles;
+-- (sans danger : uniquement des données créées pendant le développement)
+-- puis rejoue ce script.
+-- ─────────────────────────────────────────────────────────────────────────
+
+alter table profiles drop constraint if exists profiles_id_fkey;
+alter table profiles add constraint profiles_id_fkey
+  foreign key (id) references auth.users(id) on delete cascade;
+
+drop policy if exists "profiles_insert" on profiles;
+drop policy if exists "profiles_update" on profiles;
+create policy "profiles_insert" on profiles for insert with check (auth.uid() = id);
+create policy "profiles_update" on profiles for update using (auth.uid() = id);
+
+drop policy if exists "course_progress_insert" on course_progress;
+drop policy if exists "course_progress_update" on course_progress;
+create policy "course_progress_insert" on course_progress for insert with check (auth.uid() = profile_id);
+create policy "course_progress_update" on course_progress for update using (auth.uid() = profile_id);
+
+drop policy if exists "mission_progress_insert" on mission_progress;
+drop policy if exists "mission_progress_update" on mission_progress;
+create policy "mission_progress_insert" on mission_progress for insert with check (auth.uid() = profile_id);
+create policy "mission_progress_update" on mission_progress for update using (auth.uid() = profile_id);
+
+-- Comptes entreprises
+create table if not exists companies (
+  id uuid primary key references auth.users(id) on delete cascade,
+  company_name text not null,
+  company_type text not null default '',
+  contact_name text not null default '',
+  contact_email text not null,
+  created_at timestamptz not null default now()
+);
+
+alter table companies enable row level security;
+
+drop policy if exists "companies_select" on companies;
+drop policy if exists "companies_insert" on companies;
+drop policy if exists "companies_update" on companies;
+create policy "companies_select" on companies for select using (true);
+create policy "companies_insert" on companies for insert with check (auth.uid() = id);
+create policy "companies_update" on companies for update using (auth.uid() = id);
+
+-- Lier chaque mission à un compte entreprise précis (plus de soumission anonyme).
+alter table company_missions add column if not exists company_id uuid references companies(id) on delete cascade;
+
+drop policy if exists "company_missions_insert" on company_missions;
+create policy "company_missions_insert" on company_missions
+  for insert with check (auth.uid() = company_id and status = 'pending');

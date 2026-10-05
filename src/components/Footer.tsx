@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Linkedin, Mail } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import logo from "@/assets/logo-horizontal.png";
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -8,7 +9,7 @@ const Footer = () => {
     <footer className="bg-foreground text-primary-foreground py-12 px-4">
       <div className="container max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
         <div>
-          <h3 className="font-display text-lg font-bold mb-2">MissionSkills</h3>
+          <img src={logo} alt="MissionSkills" className="h-7 w-auto mb-3 brightness-0 invert" />
           <p className="text-sm opacity-70">{t("footer.description")}</p>
         </div>
         <div className="flex flex-col gap-2 text-sm opacity-80">
