@@ -35,7 +35,7 @@ const HeroSection = () => {
             </Button>
           </Link>
           <Link to="/contact">
-            <Button size="lg" variant="outline" className="text-base px-8 border-border hover:bg-muted">
+            <Button size="lg" variant="outline" className="text-base px-8 border-secondary/40 text-secondary hover:bg-secondary/10 hover:text-secondary">
               <Handshake className="mr-2" size={18} /> {t("hero.become_partner")}
             </Button>
           </Link>

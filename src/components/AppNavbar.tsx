@@ -46,9 +46,9 @@ const AppNavbar = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-sm bg-primary/10 px-3 py-1.5 rounded-full">
-            <Star size={14} className="text-primary" />
-            <span className="font-bold gradient-text">{user?.xp} XP</span>
+          <div className="flex items-center gap-1.5 text-sm bg-brand-yellow/15 px-3 py-1.5 rounded-full">
+            <Star size={14} className="text-amber-600 fill-amber-500" />
+            <span className="font-bold text-amber-700">{user?.xp} XP</span>
             <span className="text-muted-foreground text-xs">· Niv. {level}</span>
           </div>
           <Button size="sm" variant="ghost" onClick={handleLogout} className="text-muted-foreground">
@@ -74,7 +74,7 @@ const AppNavbar = () => {
             </Link>
           ))}
           <div className="flex items-center justify-between pt-2 border-t border-border mt-2">
-            <span className="text-sm font-bold gradient-text">{user?.xp} XP · Niv. {level}</span>
+            <span className="text-sm font-bold text-amber-700">{user?.xp} XP · Niv. {level}</span>
             <Button size="sm" variant="ghost" onClick={handleLogout}>
               <LogOut size={16} className="mr-1" /> Déconnexion
             </Button>

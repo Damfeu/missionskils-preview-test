@@ -26,19 +26,24 @@ const ImpactSection = () => {
         </motion.div>
 
       <div className="grid md:grid-cols-3 gap-8">
-        {stats.map((s, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.15 }}
-            className="rounded-2xl p-8 border border-border bg-background"
-          >
-            <div className="font-display text-5xl md:text-6xl font-bold gradient-text mb-2">{s.value}</div>
-            <p className="text-muted-foreground font-medium">{s.label}</p>
-          </motion.div>
-        ))}
+        {stats.map((s, i) => {
+          // text-brand-yellow est trop clair pour du texte sur fond blanc (lisibilité) —
+          // on garde un jaune/or plus soutenu ici ; le jaune pur sert plutôt de fond pour badges/puces.
+          const colors = ["text-primary", "text-secondary", "text-amber-600"];
+          return (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.15 }}
+              className="rounded-2xl p-8 border border-border bg-background"
+            >
+              <div className={`font-display text-5xl md:text-6xl font-bold mb-2 ${colors[i % colors.length]}`}>{s.value}</div>
+              <p className="text-muted-foreground font-medium">{s.label}</p>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   </section>
