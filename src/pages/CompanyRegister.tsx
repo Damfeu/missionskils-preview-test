@@ -18,16 +18,23 @@ const CompanyRegister = () => {
   const [contactName, setContactName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  const passwordsMismatch = confirmPassword.length > 0 && password !== confirmPassword;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setErrorMsg("Les deux mots de passe ne correspondent pas.");
+      return;
+    }
     setSubmitting(true);
     setErrorMsg("");
     try {
       await register(companyName, companyType, contactName, email, password);
-      navigate("/poster-une-mission");
+      navigate("/entreprise/tableau-de-bord");
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : "Inscription impossible pour le moment.");
     } finally {
@@ -79,8 +86,24 @@ const CompanyRegister = () => {
               <Label htmlFor="password">Mot de passe</Label>
               <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="6 caractères minimum" minLength={6} required className="mt-1" />
             </div>
+            <div>
+              <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                placeholder="Retapez le mot de passe"
+                minLength={6}
+                required
+                className="mt-1"
+              />
+              {passwordsMismatch && (
+                <p className="text-xs text-destructive mt-1">Les mots de passe ne correspondent pas.</p>
+              )}
+            </div>
             {errorMsg && <p className="text-sm text-destructive text-center">{errorMsg}</p>}
-            <Button type="submit" className="w-full gradient-bg border-0 text-base" size="lg" disabled={!companyName || !email || password.length < 6 || submitting}>
+            <Button type="submit" className="w-full gradient-bg border-0 text-base" size="lg" disabled={!companyName || !email || password.length < 6 || passwordsMismatch || !confirmPassword || submitting}>
               {submitting ? "Création en cours..." : "Créer mon compte"} <ArrowRight className="ml-2" size={18} />
             </Button>
             <p className="text-sm text-center text-muted-foreground">

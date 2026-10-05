@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import CompanyNavbar from "@/components/CompanyNavbar";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, Send, Plus, Trash2, LogOut, Clock, XCircle } from "lucide-react";
+import { CheckCircle, Send, Plus, Trash2, ArrowLeft } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useCompanyAuth } from "@/hooks/useCompanyAuth";
 
@@ -16,31 +17,12 @@ interface TaskDraft {
   description: string;
 }
 
-interface MyMissionRow {
-  id: string;
-  title: string;
-  status: "pending" | "approved" | "rejected";
-  admin_notes: string | null;
-  created_at: string;
-}
-
 const emptyTask = (): TaskDraft => ({ title: "", description: "" });
 
-const statusBadge = (status: MyMissionRow["status"]) => {
-  if (status === "approved") {
-    return <span className="text-xs font-semibold text-green-600 bg-green-500/10 px-2 py-0.5 rounded-full flex items-center gap-1 w-fit"><CheckCircle size={11} /> Publiée</span>;
-  }
-  if (status === "rejected") {
-    return <span className="text-xs font-semibold text-red-600 bg-red-500/10 px-2 py-0.5 rounded-full flex items-center gap-1 w-fit"><XCircle size={11} /> Rejetée</span>;
-  }
-  return <span className="text-xs font-semibold text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-full flex items-center gap-1 w-fit"><Clock size={11} /> En attente</span>;
-};
-
 const PostMission = () => {
-  const { company, loading, logout } = useCompanyAuth();
+  const { company, loading } = useCompanyAuth();
   const navigate = useNavigate();
 
-  const [myMissions, setMyMissions] = useState<MyMissionRow[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -57,20 +39,6 @@ const PostMission = () => {
   const [tasks, setTasks] = useState<TaskDraft[]>([emptyTask()]);
   const [file, setFile] = useState<File | null>(null);
 
-  const loadMyMissions = async () => {
-    if (!company) return;
-    const { data } = await supabase
-      .from("company_missions")
-      .select("id, title, status, admin_notes, created_at")
-      .eq("company_id", company.id)
-      .order("created_at", { ascending: false });
-    setMyMissions((data as MyMissionRow[]) ?? []);
-  };
-
-  useEffect(() => {
-    if (company) loadMyMissions();
-  }, [company]);
-
   const updateTask = (index: number, field: keyof TaskDraft, value: string) => {
     setTasks(prev => prev.map((t, i) => (i === index ? { ...t, [field]: value } : t)));
   };
@@ -82,11 +50,6 @@ const PostMission = () => {
   const canSubmit =
     !!company && title && description && context && objective &&
     location && deadline && validTasks.length > 0 && !submitting;
-
-  const handleLogout = async () => {
-    await logout();
-    navigate("/");
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,10 +94,6 @@ const PostMission = () => {
 
       if (error) throw error;
       setSubmitted(true);
-      setTitle(""); setDescription(""); setContext(""); setObjective("");
-      setTools(""); setSkills(""); setLocation(""); setDeadline(""); setCategory("");
-      setTasks([emptyTask()]); setFile(null);
-      await loadMyMissions();
     } catch {
       setErrorMsg("Impossible d'envoyer votre mission pour le moment. Vérifiez votre connexion et réessayez.");
     } finally {
@@ -176,51 +135,49 @@ const PostMission = () => {
     );
   }
 
+  if (submitted) {
+    return (
+      <div className="min-h-screen bg-background">
+        <CompanyNavbar />
+        <main className="pt-28 pb-16 px-4">
+          <div className="container max-w-md mx-auto text-center p-10 rounded-2xl border border-green-500/20 bg-green-500/5">
+            <CheckCircle size={48} className="text-green-500 mx-auto mb-4" />
+            <h1 className="font-display text-xl font-bold mb-2">Mission envoyée pour validation</h1>
+            <p className="text-muted-foreground mb-6">
+              Notre équipe va l'examiner et vous recontacter avant sa publication sur la plateforme.
+            </p>
+            <div className="flex flex-col gap-3">
+              <Link to="/entreprise/tableau-de-bord">
+                <Button className="w-full gradient-bg border-0">Retour au tableau de bord</Button>
+              </Link>
+              <Button variant="outline" className="w-full" onClick={() => { setSubmitted(false); navigate(0); }}>
+                Proposer une autre mission
+              </Button>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      <section className="pt-28 pb-20 px-4">
+      <CompanyNavbar />
+      <section className="pt-24 pb-20 px-4">
         <div className="container max-w-2xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-10">
-            <div>
-              <span className="inline-block text-xs font-semibold tracking-widest uppercase text-primary mb-2">
-                {company.companyName}
-              </span>
-              <h1 className="font-display text-2xl md:text-3xl font-bold">
-                Espace <span className="gradient-text">Entreprise</span>
-              </h1>
-            </div>
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-muted-foreground">
-              <LogOut size={16} className="mr-1.5" /> Déconnexion
-            </Button>
+          <Link to="/entreprise/tableau-de-bord" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-6">
+            <ArrowLeft size={14} /> Retour au tableau de bord
+          </Link>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+            <h1 className="font-display text-2xl md:text-3xl font-bold mb-2">
+              Proposer une <span className="text-primary">mission</span>
+            </h1>
+            <p className="text-muted-foreground">
+              Décrivez un besoin réel de votre entreprise. Notre équipe valide chaque mission avant
+              qu'elle soit proposée aux apprenants.
+            </p>
           </motion.div>
-
-          {myMissions.length > 0 && (
-            <div className="mb-10">
-              <h2 className="font-display font-bold text-lg mb-3">Mes missions</h2>
-              <div className="space-y-2">
-                {myMissions.map(m => (
-                  <div key={m.id} className="rounded-xl border border-border p-4 flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-semibold">{m.title}</p>
-                      {m.status === "rejected" && m.admin_notes && (
-                        <p className="text-xs text-muted-foreground mt-1">Motif : {m.admin_notes}</p>
-                      )}
-                    </div>
-                    {statusBadge(m.status)}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <h2 className="font-display font-bold text-lg mb-4">Proposer une nouvelle mission</h2>
-
-          {submitted && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6 p-4 rounded-xl border border-green-500/20 bg-green-500/5 flex items-center gap-2 text-sm text-green-700">
-              <CheckCircle size={16} /> Mission envoyée pour validation.
-            </motion.div>
-          )}
 
           <motion.form
             initial={{ opacity: 0, y: 20 }}
@@ -322,7 +279,6 @@ const PostMission = () => {
           </motion.form>
         </div>
       </section>
-      <Footer />
     </div>
   );
 };

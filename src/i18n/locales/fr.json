@@ -143,8 +143,7 @@
     "profile_label": "Profil",
     "profiles": {
       "student": "Étudiant",
-      "jobSeekers": "Chercheur d'emploi",
-      "smes": "PME / Entreprise"
+      "jobSeekers": "Chercheur d'emploi"
     }
   },
   "notFound": {

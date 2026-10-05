@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard.tsx";
 import Courses from "./pages/Courses.tsx";
 import Missions from "./pages/Missions.tsx";
 import PostMission from "./pages/PostMission.tsx";
+import CompanyDashboard from "./pages/CompanyDashboard.tsx";
 import CompanyLogin from "./pages/CompanyLogin.tsx";
 import CompanyRegister from "./pages/CompanyRegister.tsx";
 import Admin from "./pages/Admin.tsx";
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="/courses" element={<Courses />} />
               <Route path="/missions" element={<Missions />} />
               <Route path="/poster-une-mission" element={<PostMission />} />
+              <Route path="/entreprise/tableau-de-bord" element={<CompanyDashboard />} />
               <Route path="/entreprise/connexion" element={<CompanyLogin />} />
               <Route path="/entreprise/inscription" element={<CompanyRegister />} />
               <Route path="/admin" element={<Admin />} />

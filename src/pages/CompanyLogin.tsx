@@ -24,7 +24,7 @@ const CompanyLogin = () => {
     setErrorMsg("");
     try {
       await login(email, password);
-      navigate("/poster-une-mission");
+      navigate("/entreprise/tableau-de-bord");
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : "Connexion impossible. Vérifiez vos identifiants.");
     } finally {

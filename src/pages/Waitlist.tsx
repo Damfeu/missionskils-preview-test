@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, CheckCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useUser } from "@/hooks/useUser";
 
@@ -17,22 +17,27 @@ const Waitlist = () => {
   const profilesMap = t("waitlist.profiles", { returnObjects: true }) as Record<string, string>;
   const profiles = Object.values(profilesMap);
 
-  const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [profile, setProfile] = useState("");
+
+  const passwordsMismatch = confirmPassword.length > 0 && password !== confirmPassword;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setErrorMsg("Les deux mots de passe ne correspondent pas.");
+      return;
+    }
     setSubmitting(true);
     setErrorMsg("");
     try {
       await register(name, email, profile, password);
-      setSubmitted(true);
-      setTimeout(() => navigate("/dashboard"), 1200);
+      navigate("/dashboard");
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : "Inscription impossible pour le moment. Vérifiez votre connexion et réessayez.");
     } finally {
@@ -53,14 +58,14 @@ const Waitlist = () => {
             <p className="text-muted-foreground">{t("waitlist.subtitle")}</p>
           </motion.div>
 
-          {submitted ? (
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center p-10 rounded-2xl border border-border bg-muted/50">
-              <CheckCircle size={48} className="text-primary mx-auto mb-4" />
-              <h2 className="font-display font-bold text-xl mb-2">{t("waitlist.success_title")}</h2>
-              <p className="text-muted-foreground">{t("waitlist.success_message")}</p>
-            </motion.div>
-          ) : (
-            <motion.form
+          <div className="mb-6 rounded-xl border border-secondary/30 bg-secondary/5 p-4 text-sm text-center">
+            Vous représentez une entreprise et voulez proposer une mission ?{" "}
+            <Link to="/entreprise/inscription" className="text-secondary font-semibold hover:underline">
+              Créez un compte entreprise
+            </Link>
+          </div>
+
+          <motion.form
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
@@ -78,6 +83,22 @@ const Waitlist = () => {
               <div>
                 <Label htmlFor="password">Mot de passe</Label>
                 <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="6 caractères minimum" minLength={6} required className="mt-1" />
+              </div>
+              <div>
+                <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Retapez le mot de passe"
+                  minLength={6}
+                  required
+                  className="mt-1"
+                />
+                {passwordsMismatch && (
+                  <p className="text-xs text-destructive mt-1">Les mots de passe ne correspondent pas.</p>
+                )}
               </div>
               <div>
                 <Label>{t("waitlist.profile_label")}</Label>
@@ -101,15 +122,14 @@ const Waitlist = () => {
               {errorMsg && (
                 <p className="text-sm text-destructive text-center">{errorMsg}</p>
               )}
-              <Button type="submit" className="w-full gradient-bg border-0 text-base" size="lg" disabled={!name || !email || !profile || password.length < 6 || submitting}>
+              <Button type="submit" className="w-full gradient-bg border-0 text-base" size="lg" disabled={!name || !email || !profile || password.length < 6 || passwordsMismatch || !confirmPassword || submitting}>
                 {submitting ? "Inscription en cours..." : t("hero.join_waitlist")} <ArrowRight className="ml-2" size={18} />
               </Button>
               <p className="text-sm text-center text-muted-foreground">
                 Déjà un compte ?{" "}
                 <Link to="/connexion" className="text-primary hover:underline font-medium">Se connecter</Link>
               </p>
-            </motion.form>
-          )}
+          </motion.form>
         </div>
       </section>
       <Footer />

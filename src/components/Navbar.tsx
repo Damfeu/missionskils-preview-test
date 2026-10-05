@@ -12,7 +12,7 @@ const Navbar = () => {
 
   const links = [
     { label: t("nav.about"), to: "/about" },
-    { label: "Entreprises", to: "/poster-une-mission" },
+    { label: "Entreprises", to: "/entreprise/connexion" },
     { label: t("nav.contact"), to: "/contact" },
   ];
 

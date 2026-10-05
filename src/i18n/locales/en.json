@@ -143,8 +143,7 @@
     "profile_label": "Profile",
     "profiles": {
       "student": "Student",
-      "jobSeekers": "Job Seeker",
-      "smes": "SME / Business"
+      "jobSeekers": "Job Seeker"
     }
   },
   "notFound": {
